@@ -17,21 +17,21 @@ app.use(express.json());
 
 app.use(express.static("./public"));
 
-app.get("/public/notes", (req, res) => {
+app.get("/api/notes", (req, res) => {
   readFile("./db/db.json", "utf8").then((data) => {
     notes = [].concat(JSON.parse(data));
     res.json(notes);
   });
 });
 
-app.post("/public/notes", (req, res) => {
+app.post("/api/notes", (req, res) => {
   const note = req.body;
   readFile("./db/db.json", "utf8")
     .then((data) => {
       const freshNote = [].concat(JSON.parse(data));
-      note.id = notes.length + 1;
-      notes.push(note);
-      return notes;
+      note.id = freshNote.length + 1;
+      freshNote.push(note);
+      return freshNote;
     })
     .then((notes) => {
       writeFile("./db/db.json", JSON.stringify(notes));
@@ -39,7 +39,8 @@ app.post("/public/notes", (req, res) => {
     });
 });
 
-app.delete("/puhlic/notes/:id", (req, res) => {
+app.delete("/api/notes/:id", (req, res) => {
+  const removeNote = req.body;
   const deleteById = notes.filter(
     (removeNote) => removeNote.id !== req.params.id
   );
